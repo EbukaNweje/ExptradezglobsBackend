@@ -104,7 +104,7 @@ totalWithdrawal: {
 
   verify: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 
   isAdmin: {

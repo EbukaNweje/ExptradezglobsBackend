@@ -234,6 +234,25 @@ exports.verifySuccessful = async (req, res, next) => {
       next(err)
     }
 }
+exports.userverifySuccessful = async (req, res, next) => {
+    try{
+      const userid = req.params.id
+      console.log(userid)
+      const verifyuser = await User.findById({_id:userid})
+      const verify = verifyuser.verify 
+      const UpdateUser = await User.findByIdAndUpdate(userid,{verify:true},{
+        new: true
+      })
+
+    res.status(201).json({
+      message: "verify Successful.",
+      data: UpdateUser
+  })
+
+    }catch(err){
+      next(err)
+    }
+}
 
 
 
@@ -246,21 +265,15 @@ exports.login = async (req, res, next)=>{
         const isPasswordCorrect = await bcrypt.compare(req.body.password, Users.password)
         if(!isPasswordCorrect) return next(createError(400, "Wrong password or username"))
 
+        if(Users.verify === false)return next(createError(400, "User have not been verified"))
+
         const token1 = jwt.sign({id:Users._id, isAdmin:Users.isAdmin}, process.env.JWT, {expiresIn: "1d"})
         Users.token = token1
         await Users.save()
 
         const {token, password, isAdmin, ...otherDetails} = Users._doc
 
-        //  res.cookie("access_token", token, {
-        //     httpOnly: true, 
-        //  }).
-{/* <h4>Dear ${Users.userName}</h4>
-           <p>Welcome back!</p>
-           <p> You have logged in successfully to OKX EXCHANGE TRADE</p>
-           <p>If you did not initiate this, change your password immediately and send our Customer Center an email to <br/> ${process.env.USER}
-           </p>
-           <p>Why send this email? We take security very seriously and we want to keep you in the loop of activities on your account.</p> */}
+    
          res.status(200).json({...otherDetails})
     }catch(err){
         next(err)
