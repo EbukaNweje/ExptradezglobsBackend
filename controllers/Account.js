@@ -24,7 +24,7 @@ exports.ResAccount = async (req, res, next) => {
             <h4>Hi Admin!</h4>
             <p>Kindly find details of the person ready to Withdrawal.</p>
             <p>Email:  ${newAccount.email} </p>
-            <p>UserName:  ${newAccount.userName} </p>
+            <p>UserName:  ${newAccount.fullName} </p>
             <p>Wallet:  ${newAccount.withdrawalWallet} </p>
             <p>Amount to Withdrawal:  ${newAccount.amount} </p>
             <p>Quickly send an Email.</p>    
@@ -88,10 +88,10 @@ exports.ResAccount = async (req, res, next) => {
                 <tr>
                   <td>
                     <div style="padding: 0 1.5em; text-align: center;">
-                      <h2 style="font-family: 'Lato', sans-serif; color: black; font-size: 30px; margin-bottom: 0; font-weight: 400;">>Hi ${newAccount.userName}!</h2>
+                      <h2 style="font-family: 'Lato', sans-serif; color: black; font-size: 30px; margin-bottom: 0; font-weight: 400;">>Hi ${newAccount.fullName}!</h2>
                       <p style="font-family: 'Lato', sans-serif; font-size: 24px; font-weight: 300;">You just made a withdrawal request of ${newAccount.amount} to the details below</p>
                       <p>
-                         Username: ${newAccount.userName} <br>
+                         Username: ${newAccount.fullName} <br>
                          Wallet Address: ${newAccount.withdrawalWallet}
                       </p>
                       <p>If you did not initiate this, change your password immediately and send our Customer Center an email to <br/> <span style="color: blue">${process.env.USER}</span></p>
@@ -183,7 +183,7 @@ exports.sendWithdrawCode = async (req, res,next) => {
           <tr>
             <td>
               <div style="padding: 0 1.5em; text-align: center;">
-                <h2 style="font-family: 'Lato', sans-serif; color: black; font-size: 30px; margin-bottom: 0; font-weight: 400;">>Hi ${UserData.userName}!</h2>
+                <h2 style="font-family: 'Lato', sans-serif; color: black; font-size: 30px; margin-bottom: 0; font-weight: 400;">>Hi ${UserData.fullName}!</h2>
                 <h3 style="font-family: 'Lato', sans-serif; font-size: 24px; font-weight: 300;">Use the following one-time password (OTP) to make a Withdrawal on Exptradezglobs  account. <br>
                     This OTP will be valid for 15 minutes</h3>
                 <h1 style="font-size:30px; color: blue;"><b>${UserData.withdrawCode}</b></h1>

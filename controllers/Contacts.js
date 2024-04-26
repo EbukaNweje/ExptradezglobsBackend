@@ -19,7 +19,7 @@ exports.CreateContact = async (req, res, next) => {
             subject: "Support Form",
           html: `
           <h4>Hi Admin!</h4>
-            <p>${NewContactMsg.userName} Just sent you a Support message</p>
+            <p>${NewContactMsg.fullName} Just sent you a Support message</p>
 
             <p> support department: ${NewContactMsg.supportDepartment} </p>
            <p>
