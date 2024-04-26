@@ -50,6 +50,8 @@ exports.deposit = async (req, res) => {
             roundedNumber = btcAmount.toFixed(9);
         }
 
+        const Depo = await depositModel.find()
+
         // Save the deposit details
         const deposit = new depositModel({
             user: depositor._id,
@@ -57,7 +59,7 @@ exports.deposit = async (req, res) => {
             coin: coin,
             total: roundedNumber,
             status: 'pending',
-            transactionType: deposit.transactionType
+            transactionType: Depo.transactionType,
         });
         await deposit.save();
 
