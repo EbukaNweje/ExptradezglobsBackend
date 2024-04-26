@@ -57,7 +57,7 @@ exports.deposit = async (req, res) => {
             coin: coin,
             total: roundedNumber,
             status: 'pending',
-            transactionType: depositor.transactionType
+            transactionType: deposit.transactionType
         });
         await deposit.save();
 
@@ -71,6 +71,9 @@ exports.deposit = async (req, res) => {
         // Add the deposited amount to the user's account balance
         depositor.accountBalance += newAmount;
         }
+
+        deposit.user = id
+        await deposit.sav()
 
         // Save the transfer id to the user
         depositor.Transactions.push(deposit._id);
@@ -105,7 +108,7 @@ exports.deposit = async (req, res) => {
 exports.getAllDeposits = async (req, res) => {
     try {
         // Find all deposit records and populate the user field to get user information
-        const deposits = await depositModel.find().populate('user');
+        const deposits = await depositModel.find().populate('User');
 
         if (!deposits || deposits.length === 0) {
             return res.status(404).json({
