@@ -4,14 +4,16 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit"
+    "test": "echo \"Error: no test specified\" && exit",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "bcrypt": "^5.0.1",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.30.0",
     "cookie-parser": "^1.4.6",
@@ -31,11 +33,12 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
-    "mongoose": "^6.4.4",
+    "luxon": "^3.4.4",
+    "mongoose": "^6.12.8",
     "mongoose-paginate-v2": "^1.7.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.7.7",
-    "nodemon": "^2.0.20",
+    "nodemon": "^2.0.22",
     "otp-generator": "^4.0.1",
     "stripe": "^9.12.0",
     "uuid": "^8.3.2",
