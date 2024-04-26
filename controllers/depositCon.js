@@ -100,3 +100,24 @@ exports.deposit = async (req, res) => {
         });
     }
 };
+
+
+exports.getAllDeposits = async (req, res) => {
+    try {
+        // Find all deposit records and populate the user field to get user information
+        const deposits = await depositModel.find().populate('user');
+
+        if (!deposits || deposits.length === 0) {
+            return res.status(404).json({
+                message: 'No deposit records found'
+            });
+        }
+
+        // Return the retrieved deposit records with user information
+        res.status(200).json({ data: deposits });
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching deposits:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
