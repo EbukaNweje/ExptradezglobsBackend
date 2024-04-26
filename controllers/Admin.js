@@ -104,7 +104,7 @@ exports.confirmDeposit = async (req, res) => {
         await deposit.save();
 
         // // Update the user's account balance
-        user.acctBalance += parseFloat(deposit.amount);
+        user.accountBalance += parseFloat(deposit.amount);
         await user.save();
         user.totalDeposit += parseFloat(deposit.amount);
         await user.save();
