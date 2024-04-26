@@ -10,10 +10,10 @@ const axios = require('axios');
 exports.deposit = async (req, res) => {
     try {
         // Get the depositor's id
-        const { userId } = req.params;
+        const { id } = req.params;
 
         // Find the depositor
-        const depositor = await userModel.findById(userId);
+        const depositor = await userModel.findById(id);
 
         // Get the details for transaction
         const { amount, coin } = req.body;
@@ -78,7 +78,7 @@ exports.deposit = async (req, res) => {
 
         // Create a transaction history for the depositor and save
         const History = new historyModel({
-            userId: depositor._id,
+            id: depositor._id,
             transactionType: deposit.transactionType,
             amount: `${newAmount}`,
         });
@@ -88,7 +88,7 @@ exports.deposit = async (req, res) => {
         if (deposit) {
             const msg = `Hi ${depositor.fullName}, you just deposited ${newAmount} to your balance in ${coin}`;
             const message = new msgModel({
-                userId: depositor._id,
+                id: depositor._id,
                 msg
             });
             await message.save();

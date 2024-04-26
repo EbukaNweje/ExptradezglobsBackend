@@ -5,7 +5,7 @@ const router = require("express").Router()
 
 
 
-router.get("/deposit/:userId", deposit)
+router.get("/deposit/:id", deposit)
 
 
 module.exports = router
