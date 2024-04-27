@@ -7,6 +7,6 @@ const { makeInvestment } = require("../controllers/investController")
 
 
 
-router.get("/invest/:id", makeInvestment)
+router.post("/invest/:id", makeInvestment)
 
 module.exports = router
