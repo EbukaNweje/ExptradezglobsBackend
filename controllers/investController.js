@@ -171,8 +171,11 @@ exports.makeInvestment = async (req, res) => {
 
         const user = await UserModel.findById(userId);
         const plan = await PlansModel.findById(planId);
-        if (!user || !plan) {
-            return res.status(404).json({ message: 'User or plan not found' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (!plan) {
+            return res.status(404).json({ message: 'plan not found' });
         }
 
         if (user.accountBalance < amount) {
