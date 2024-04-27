@@ -75,8 +75,6 @@ exports.deposit = async (req, res) => {
         }
 
         deposit.user = id
-        await deposit.save()
-
         // Save the transfer id to the user
         depositor.Transactions.push(deposit._id);
         await depositor.save();

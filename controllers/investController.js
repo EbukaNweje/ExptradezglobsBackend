@@ -114,6 +114,7 @@
 
 
 
+const InterestModel = require('../models/InterestModel');
 const UserModel = require('../models/User');
 const InvestModel = require('../models/investModel');
 const PlansModel = require('../models/plansModel');
@@ -130,14 +131,14 @@ const addInterest = async (userId, planId, amount) => {
 
         const interest = amount * (plan.percentageInterest / 100); // Calculate interest
 
-        user.accountBalance += interest; // Add interest to the user's account balance
+        user.accountBalance += parseFloat(interest); // Add interest to the user's account balance
         await user.save();
 
-        user.totalProfit += interest; // Add interest to the user's account balance
+        user.totalProfit += parseFloat(interest) ; // Add interest to the user's account balance
         await user.save();
 
         // Log the interest transaction
-        const interestTransaction = new InvestModel({
+        const interestTransaction = new InterestModel({
             user: userId,
             amount: interest,
             transactionType: 'Interest'
@@ -198,7 +199,7 @@ exports.makeInvestment = async (req, res) => {
         await investment.save();
 
         // Update the user's total investment
-        user.totalInvestment += amount;
+        user.totalInvestment += parseFloat(amount);
         await user.save();
 
       // Schedule interest calculation based on the plan's duration
