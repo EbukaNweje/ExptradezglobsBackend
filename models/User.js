@@ -118,20 +118,24 @@ totalWithdrawal: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "InvestmentPlan",
   }],
-  Transactions: [
-      {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'deposit'
-      },
-      {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'investment'
-      },
-      {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'withdraw'
-      },
-  ],
+  Transactions: {
+    deposits: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'deposit'
+    }],
+    withdrawals: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'withdraw'
+    }],
+    investments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Invest'
+    }],
+    interests: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Interest'
+    }],
+},
 
 }, {timestamps: true});
 

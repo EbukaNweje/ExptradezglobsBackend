@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken")
 const {validationResult } = require('express-validator');
 const depositModel = require('../models/depositModel');
 const userModel = require('../models/User');
+const withdrawModel = require("../models/withdrawModel");
 
 exports.register = async (req, res, next)=>{
     try{
@@ -111,6 +112,52 @@ exports.confirmDeposit = async (req, res) => {
 
         // Return success response
         res.status(200).json({ message: 'Deposit confirmed successfully' });
+    } catch (err) {
+        // Handle errors
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
+
+
+// Controller function to confirm deposits
+exports.confirmWithdraw = async (req, res) => {
+    try {
+        // Extract withdraw ID from request parameters
+        const { withdrawId } = req.params;
+
+        // Find the withdraw in the database
+        const withdraw = await withdrawModel.findById(withdrawId);
+        if (!withdraw) {
+            return res.status(404).json({ message: 'withdrawal not found' });
+        }
+
+        // Check if the withdraw is already confirmed
+        if (withdraw.status === 'confirmed') {
+            return res.status(400).json({ message: 'withdrawal is already confirmed' });
+        }
+
+        // Find the user associated with the withdraw
+        const user = await userModel.findById(withdraw.user);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update the withdraw status to 'confirmed'
+        withdraw.status = 'confirmed';
+        await withdraw.save();
+
+        // // Update the user's account balance
+        user.accountBalance += parseFloat(withdraw.amount);
+        await user.save();
+        user.totalWithdrawal += parseFloat(withdraw.amount);
+        await user.save();
+
+        // Return success response
+        res.status(200).json({ message: 'withdrawal confirmed successfully' });
     } catch (err) {
         // Handle errors
         console.error(err);
