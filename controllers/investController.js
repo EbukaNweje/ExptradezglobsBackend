@@ -140,9 +140,13 @@ const addInterest = async (userId, planId, amount) => {
         // Log the interest transaction
         const interestTransaction = new InterestModel({
             user: userId,
+            plan: planId,
             amount: interest,
             transactionType: 'Interest'
         });
+
+        user.Transactions.interests.push(interestTransaction._id);
+
         await interestTransaction.save();
 
         // Log the interest transaction in history

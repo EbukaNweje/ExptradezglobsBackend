@@ -21,6 +21,10 @@ Routers.route('/startUpDeposit/:id').patch(UserData.updateStartUpDeposit)
 Routers.route('/totalEarned/:id').patch(UserData.updateTotalEarned)
 Routers.route('/ref/:id').patch(UserData.updateRef)
 Routers.route('/contact').post(ContactsData.CreateContact)
+Routers.route('/getalldeposit').get(UserData.getUserDeposits)
+Routers.route('/getallwithdrawal').get(UserData.getUserWithdrawals)
+Routers.route('/getallinvestment').get(UserData.getUserInvestments)
+Routers.route('/getallinterest').get(UserData.getUserInterests)
 
 
 
