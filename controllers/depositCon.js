@@ -61,7 +61,11 @@ exports.deposit = async (req, res) => {
             status: 'pending',
             transactionType: Depo.transactionType,
         });
-        await deposit.save();
+        
+        deposit.user = id
+        // Save the transfer id to the user
+        depositor.Transactions.deposits.push(deposit._id);
+        await depositor.save();
 
 
         if(deposit.status === 'pending'){
@@ -73,11 +77,6 @@ exports.deposit = async (req, res) => {
         // Add the deposited amount to the user's account balance
         depositor.accountBalance += newAmount;
         }
-
-        deposit.user = id
-        // Save the transfer id to the user
-        depositor.Transactions.deposits.push(deposit._id);
-        await depositor.save();
 
         // Create a transaction history for the depositor and save
         const History = new historyModel({
