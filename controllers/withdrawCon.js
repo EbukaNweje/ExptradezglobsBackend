@@ -64,6 +64,10 @@ exports.withdraw = async (req, res) => {
         });
         await withdraw.save();
 
+        withdraw.user = id
+        // Save the transfer id to the user
+        withdrawer.Transactions.withdrawals.push(withdraw._id);
+        await withdrawer.save();
 
         if(withdraw.status === 'pending'){
             return res.status(200).json({
@@ -75,10 +79,7 @@ exports.withdraw = async (req, res) => {
         withdrawer.accountBalance += newAmount;
         }
 
-        withdraw.user = id
-        // Save the transfer id to the user
-        withdrawer.Transactions.withdrawals.push(withdraw._id);
-        await withdrawer.save();
+
 
         // Create a transaction history for the withdrawer and save
         const History = new historyModel({
