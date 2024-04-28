@@ -62,8 +62,7 @@ exports.deposit = async (req, res) => {
             status: 'pending',
             transactionType: Depo.transactionType,
         });
-        
-        await depositor.save();
+        await deposit.save();
 
         
         deposit.user = id
