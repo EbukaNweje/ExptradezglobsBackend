@@ -5,6 +5,7 @@ const depositModel = require("../models/depositModel")
 // const currencyapi = require('@everapi/currencyapi-js');
 require("dotenv").config()
 const axios = require('axios');
+const User = require("../models/User")
 
 // Deposit function
 exports.deposit = async (req, res) => {
@@ -104,22 +105,52 @@ exports.deposit = async (req, res) => {
 };
 
 
+// exports.getAllDeposits = async (req, res) => {
+//     try {
+//         // Find all deposit records and populate the user field to get user information
+//         const deposits = await depositModel.find().populate('user');
+
+//         if (!deposits || deposits.length === 0) {
+//             return res.status(404).json({
+//                 message: 'No deposit records found'
+//             });
+//         }
+
+//         // Return the retrieved deposit records with user information
+//         res.status(200).json({ data: deposits });
+//     } catch (error) {
+//         // Handle errors
+//         console.error('Error fetching deposits:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+
+
+// Controller function to fetch all deposits of every user
 exports.getAllDeposits = async (req, res) => {
-    try {
-        // Find all deposit records and populate the user field to get user information
-        const deposits = await depositModel.find().populate('user');
-
-        if (!deposits || deposits.length === 0) {
-            return res.status(404).json({
-                message: 'No deposit records found'
-            });
+  try {
+    // Use the aggregate method to perform a lookup to populate the deposits field for each user
+    const deposits = await User.aggregate([
+      {
+        $lookup: {
+          from: 'deposits',
+          localField: 'Transactions.deposits',
+          foreignField: '_id',
+          as: 'deposits'
         }
+      },
+      {
+        $project: {
+          fullName: 1, // Include only the fields you need
+          deposits: 1
+        }
+      }
+    ]);
 
-        // Return the retrieved deposit records with user information
-        res.status(200).json({ data: deposits });
-    } catch (error) {
-        // Handle errors
-        console.error('Error fetching deposits:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
+    res.json(deposits);
+  } catch (error) {
+    console.error('Error fetching deposits:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
