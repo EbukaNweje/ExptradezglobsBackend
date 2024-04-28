@@ -129,28 +129,55 @@ exports.deposit = async (req, res) => {
 
 // Controller function to fetch all deposits of every user
 exports.getAllDeposits = async (req, res) => {
-  try {
-    // Use the aggregate method to perform a lookup to populate the deposits field for each user
-    const deposits = await User.aggregate([
-      {
-        $lookup: {
-          from: 'deposits',
-          localField: 'Transactions.deposits',
-          foreignField: '_id',
-          as: 'deposits'
-        }
-      },
-      {
-        $project: {
-          fullName: 1, // Include only the fields you need
-          deposits: 1
-        }
-      }
-    ]);
+//   try {
+//     // Use the aggregate method to perform a lookup to populate the deposits field for each user
+//     const deposits = await User.aggregate([
+//       {
+//         $lookup: {
+//           from: 'deposits',
+//           localField: 'Transactions.deposits',
+//           foreignField: '_id',
+//           as: 'deposits'
+//         }
+//       },
+//       {
+//         $project: {
+//           fullName: 1, // Include only the fields you need
+//           deposits: 1
+//         }
+//       }
+//     ]);
 
-    res.json(deposits);
+//     res.json(deposits);
+//   } catch (error) {
+//     console.error('Error fetching deposits:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+
+try {
+    // Find all users
+    const users = await User.find();
+
+    // Create an array to store user deposits
+    const userDeposits = [];
+
+    // Iterate over each user
+    for (const user of users) {
+      // Populate deposits for the current user
+      await user.populate('Transactions.deposits').execPopulate();
+
+      // Extract user's full name, email, and deposits
+      const { fullName, email, Transactions: { deposits } } = user;
+
+      // Push the user's full name, email, and deposits to the array
+      userDeposits.push({ fullName, email, deposits });
+    }
+
+    // Send the array of user deposits as the response
+    res.json(userDeposits);
   } catch (error) {
     console.error('Error fetching deposits:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+
 }
