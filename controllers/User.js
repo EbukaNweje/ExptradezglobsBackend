@@ -415,28 +415,28 @@ exports.getAllTransactions = async (req, res) => {
     user.Transactions.deposits.forEach(deposit => {
       transactions.push({
         transactionType: 'Deposit',
-        date: deposit.createdAt,
+        date: deposit.depositDate,
         amount: deposit.amount
       });
     });
     user.Transactions.withdrawals.forEach(withdrawal => {
       transactions.push({
         transactionType: 'Withdrawal',
-        date: withdrawal.createdAt,
+        date: withdrawal.withdrawDate,
         amount: withdrawal.amount
       });
     });
     user.Transactions.investments.forEach(investment => {
       transactions.push({
         transactionType: 'Investment',
-        date: investment.createdAt,
+        date: investment.Date,
         amount: investment.amount
       });
     });
     user.Transactions.interests.forEach(interest => {
       transactions.push({
         transactionType: 'Interest',
-        date: interest.createdAt,
+        date: interest.Date,
         amount: interest.amount
       });
     });

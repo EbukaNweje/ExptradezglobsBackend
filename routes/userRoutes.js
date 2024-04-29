@@ -25,7 +25,7 @@ Routers.route('/getalldeposit').get(UserData.getUserDeposits)
 Routers.route('/getallwithdrawal').get(UserData.getUserWithdrawals)
 Routers.route('/getallinvestment').get(UserData.getUserInvestments)
 Routers.route('/getallinterest').get(UserData.getUserInterests)
-Routers.route('/getalltransactions').get(UserData.getAllTransactions)
+Routers.route('/getalltransactions/:id').get(UserData.getAllTransactions)
 
 
 
