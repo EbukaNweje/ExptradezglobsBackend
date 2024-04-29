@@ -434,7 +434,7 @@ exports.getAllTransactions = async (req, res) => {
         transactionType: 'Investment',
         date: investment.Date,
         amount: investment.amount,
-        status: investment.status
+        status: "confirmed"
 
       });
     });
