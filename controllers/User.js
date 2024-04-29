@@ -416,28 +416,35 @@ exports.getAllTransactions = async (req, res) => {
       transactions.push({
         transactionType: 'Deposit',
         date: deposit.depositDate,
-        amount: deposit.amount
+        amount: deposit.amount,
+        status: deposit.status
       });
     });
     user.Transactions.withdrawals.forEach(withdrawal => {
       transactions.push({
         transactionType: 'Withdrawal',
         date: withdrawal.withdrawDate,
-        amount: withdrawal.amount
+        amount: withdrawal.amount,
+        status: withdrawal.status
+
       });
     });
     user.Transactions.investments.forEach(investment => {
       transactions.push({
         transactionType: 'Investment',
         date: investment.Date,
-        amount: investment.amount
+        amount: investment.amount,
+        status: investment.status
+
       });
     });
     user.Transactions.interests.forEach(interest => {
       transactions.push({
         transactionType: 'Interest',
         date: interest.Date,
-        amount: interest.amount
+        amount: interest.amount,
+        status: "confirmed"
+
       });
     });
 
