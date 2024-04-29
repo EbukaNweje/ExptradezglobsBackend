@@ -1,4 +1,5 @@
 const User = require("../models/User")
+const investModel = require("../models/investModel")
 
 exports.getoneUser = async (req, res, next) =>{
     try {
@@ -465,14 +466,67 @@ exports.getAllTransactions = async (req, res) => {
 
 // const User = require('../models/User');
 
+// exports.getAllUserInvestmentPlans = async (req, res) => {
+//   try {
+//     // Fetch user by ID from request or however you're identifying the user
+//     const id = req.params.id; // Assuming user ID is available in request
+
+//     // Find the user and populate the investment plans
+//     const user = await User.findById(id).populate('investmentPlan.investId').exec();
+
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Extract investment plans from user object
+//     const investmentPlans = user.investmentPlan;
+
+//     // Return the investment plans associated with the user
+//     return res.status(200).json(investmentPlans);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server Error' });
+//   }
+// };
+
+
+// exports.getAllUserInvestmentPlans = async (req, res) => {
+//   try {
+//     // Fetch user by ID from request or however you're identifying the user
+//     const id = req.params.id; // Assuming user ID is available in request
+
+//     // Find the user and populate the investment plans with full investment details
+//     const user = await User.findById(id).populate({
+//       path: 'investmentPlan.investId',
+//       model: 'investModel' // Replace 'InvestModel' with the actual model name if different
+//     }).exec();
+
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Extract investment plans from user object
+//     const investmentPlans = user.investmentPlan;
+
+//     // Return the investment plans associated with the user
+//     return res.status(200).json(investmentPlans);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server Error' });
+//   }
+// };
+
+
+
+
+
+
 exports.getAllUserInvestmentPlans = async (req, res) => {
   try {
-    // Fetch user by ID from request or however you're identifying the user
     const id = req.params.id; // Assuming user ID is available in request
 
-    // Find the user and populate the investment plans
-    const user = await User.findById(id).populate('investmentPlan.investId').exec();
-
+    // Find the user
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -480,8 +534,23 @@ exports.getAllUserInvestmentPlans = async (req, res) => {
     // Extract investment plans from user object
     const investmentPlans = user.investmentPlan;
 
-    // Return the investment plans associated with the user
-    return res.status(200).json(investmentPlans);
+    // Fetch investment details for each plan
+    const populatedInvestmentPlans = await Promise.all(investmentPlans.map(async (plan) => {
+      const investment = await investModel.findById(plan.investId);
+      if (!investment) {
+        return null; // Handle if investment details are not found
+      }
+      return {
+        plan: plan,
+        details: investment
+      };
+    }));
+
+    // Filter out null values (if any)
+    const filteredInvestmentPlans = populatedInvestmentPlans.filter(plan => plan !== null);
+
+    // Return the investment plans associated with the user along with their details
+    return res.status(200).json(filteredInvestmentPlans);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server Error' });
