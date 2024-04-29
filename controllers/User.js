@@ -392,3 +392,62 @@ exports.getUserWithdrawals = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+
+
+exports.getAllTransactions = async (req, res) => {
+  try {
+    // Fetch user by ID from request or however you're identifying the user
+    const id = req.params.id; 
+
+    // Fetch user with populated transactions
+    const user = await User.findById(id)
+      .populate('Transactions.deposits Transactions.withdrawals Transactions.investments Transactions.interests')
+      .exec();
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Extract transactions from user object and simplify them
+    const transactions = [];
+    user.Transactions.deposits.forEach(deposit => {
+      transactions.push({
+        transactionType: 'Deposit',
+        date: deposit.createdAt,
+        amount: deposit.amount
+      });
+    });
+    user.Transactions.withdrawals.forEach(withdrawal => {
+      transactions.push({
+        transactionType: 'Withdrawal',
+        date: withdrawal.createdAt,
+        amount: withdrawal.amount
+      });
+    });
+    user.Transactions.investments.forEach(investment => {
+      transactions.push({
+        transactionType: 'Investment',
+        date: investment.createdAt,
+        amount: investment.amount
+      });
+    });
+    user.Transactions.interests.forEach(interest => {
+      transactions.push({
+        transactionType: 'Interest',
+        date: interest.createdAt,
+        amount: interest.amount
+      });
+    });
+
+    // Sort transactions by date
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Return the simplified transactions array
+    return res.status(200).json(transactions);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+};
