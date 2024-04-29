@@ -22,6 +22,9 @@ const InvestmentPlanSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    investId: {
+        type: mongoose.SchemaTypes.ObjectId
+    },
 }, { timestamps: true });
 
 const plansModel = mongoose.model('InvestmentPlan', InvestmentPlanSchema);
