@@ -200,13 +200,13 @@ exports.makeInvestment = async (req, res) => {
             plan: planId,
             amount: amount
         });
-
+        await investment.save();
                 
         investment.user = userId
         investment.plan = planId
         // Save the transfer id to the user
         user.Transactions.investments.push(investment._id);
-        await investment.save();
+
 
         // Update the user's total investment
         user.totalInvestment += parseFloat(amount);
