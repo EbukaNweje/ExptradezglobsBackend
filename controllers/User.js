@@ -471,7 +471,7 @@ exports.getAllUserInvestmentPlans = async (req, res) => {
     const id = req.params.id; // Assuming user ID is available in request
 
     // Find the user and populate the investment plans
-    const user = await User.findById(id).populate('investmentPlan.userId').exec();
+    const user = await User.findById(id).populate('investmentPlan.investId').exec();
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

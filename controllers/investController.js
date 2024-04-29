@@ -193,12 +193,16 @@ exports.makeInvestment = async (req, res) => {
         // Deduct the amount from the user's balance
         user.accountBalance -= amount;
         await user.save();
+        const endDate = addDays(new Date(), plan.durationDays);
+
 
         // Create the investment record
         const investment = new InvestModel({
             user: userId,
             plan: planId,
-            amount: amount
+            amount: amount,
+            endDate,
+            Date
         });
         await investment.save();
                 
