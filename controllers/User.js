@@ -458,3 +458,32 @@ exports.getAllTransactions = async (req, res) => {
     return res.status(500).json({ message: 'Server Error' });
   }
 };
+
+
+
+// controllers/userController.js
+
+// const User = require('../models/User');
+
+exports.getAllUserInvestmentPlans = async (req, res) => {
+  try {
+    // Fetch user by ID from request or however you're identifying the user
+    const id = req.params.id; // Assuming user ID is available in request
+
+    // Find the user and populate the investment plans
+    const user = await User.findById(id).populate('investmentPlan').exec();
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Extract investment plans from user object
+    const investmentPlans = user.investmentPlan;
+
+    // Return the investment plans associated with the user
+    return res.status(200).json(investmentPlans);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+};

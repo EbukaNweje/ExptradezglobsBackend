@@ -206,6 +206,7 @@ exports.makeInvestment = async (req, res) => {
         investment.plan = planId
         // Save the transfer id to the user
         user.Transactions.investments.push(investment._id);
+        user.investmentPlan.push(planId);
 
 
         // Update the user's total investment
