@@ -21,6 +21,10 @@ const InvestmentPlanSchema = new mongoose.Schema({
     durationDays: {
         type: Number,
         required: true
+    },
+    investment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Invest'
     }
 }, { timestamps: true });
 
