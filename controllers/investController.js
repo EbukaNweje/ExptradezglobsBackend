@@ -209,7 +209,7 @@ exports.makeInvestment = async (req, res) => {
         investment.user = userId
         investment.plan = planId
 
-        plan.investId = investment._id;
+        plan.investId.push(investment._id);
         await plan.save();
         // Save the transfer id to the user
         user.Transactions.investments.push(investment._id);
