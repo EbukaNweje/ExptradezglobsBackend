@@ -21,11 +21,7 @@ const InvestmentPlanSchema = new mongoose.Schema({
     durationDays: {
         type: Number,
         required: true
-    },
-    investId: [{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'invest'
-    }],
+    }
 }, { timestamps: true });
 
 const plansModel = mongoose.model('InvestmentPlan', InvestmentPlanSchema);

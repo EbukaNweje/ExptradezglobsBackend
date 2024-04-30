@@ -116,7 +116,7 @@ totalWithdrawal: {
   },
   investmentPlan:[{
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "InvestmentPlan",
+      ref: "userplan",
   }],
   Transactions: {
     deposits: [{

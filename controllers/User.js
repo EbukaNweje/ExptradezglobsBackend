@@ -576,49 +576,122 @@ exports.getAllTransactions = async (req, res) => {
 
 
 
-const plansModel = require("../models/plansModel")
+// const plansModel = require("../models/plansModel")
+
+// exports.getAllUserInvestmentPlans = async (req, res) => {
+//   try {
+//     const id = req.params.id; // Assuming user ID is available in request
+
+//     // Find the user by ID
+//     const user = await User.findById(id).populate('investmentPlan');
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Extract investment plans from user object
+//     const investmentPlans = user.investmentPlan;
+
+//     // Fetch details of each plan along with the invest details
+//     const populatedInvestmentPlans = await Promise.all(investmentPlans.map(async (plan) => {
+//       // Find the plan details
+//       const planDetails = await plansModel.findById(plan);
+//       if (!planDetails) {
+//         return null;
+//       }
+
+//       // Find details of each invest referenced in the plan
+//       const investDetails = await Promise.all(planDetails.investId.map(async (investId) => {
+//         const invest = await investModel.findById(investId);
+//         return invest;
+//       }));
+
+//       return {
+//         plan: planDetails,
+//         investDetails: investDetails.filter(invest => invest !== null)
+//       };
+//     }));
+
+//     // Filter out null values (if any)
+//     const filteredInvestmentPlans = populatedInvestmentPlans.filter(plan => plan !== null);
+
+//     // Return the investment plans associated with the user along with their invest details
+//     return res.status(200).json(filteredInvestmentPlans);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server Error' });
+//   }
+// };
+
+
+
+
+const plansModel = require("../models/plansModel");
+const userPlanModel = require("../models/userPlanModel")
+
+// exports.getAllUserInvestmentPlans = async (req, res) => {
+//   try {
+//     const userId = req.params.id; // Assuming user ID is available in request
+
+//     // Find the user by ID
+//     const user = await User.findById(userId).populate('investmentPlan');
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Extract investment plans from user object
+//     const investmentPlans = user.investmentPlan;
+
+//     // Fetch details of each plan along with the invest details
+//     const populatedInvestmentPlans = await Promise.all(investmentPlans.map(async (plan) => {
+//       // Find the plan details
+//       const planDetails = await plansModel.findById(plan);
+//       if (!planDetails) {
+//         return null;
+//       }
+
+//       // Find details of the invest referenced in the plan
+//       const investId = planDetails.investId;
+//       const investDetails = investId ? await investModel.findById(investId) : null;
+
+//       return {
+//         plan: planDetails,
+//         investDetails: investDetails
+//       };
+//     }));
+
+//     // Filter out null values (if any)
+//     const filteredInvestmentPlans = populatedInvestmentPlans.filter(plan => plan !== null);
+
+//     // Return the investment plans associated with the user along with their invest details
+//     return res.status(200).json(filteredInvestmentPlans);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server Error' });
+//   }
+// };
+
+
+
 
 exports.getAllUserInvestmentPlans = async (req, res) => {
   try {
-    const id = req.params.id; // Assuming user ID is available in request
-
-    // Find the user by ID
-    const user = await User.findById(id).populate('investmentPlan');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Extract investment plans from user object
-    const investmentPlans = user.investmentPlan;
-
-    // Fetch details of each plan along with the invest details
-    const populatedInvestmentPlans = await Promise.all(investmentPlans.map(async (plan) => {
-      // Find the plan details
-      const planDetails = await plansModel.findById(plan);
-      if (!planDetails) {
-        return null;
+    // Find all UserPlan documents and populate both plan and investment fields
+    const userPlans = await userPlanModel.find().populate({
+      path: 'plan',
+      populate: {
+        path: 'investment'
       }
+    });
 
-      // Find details of each invest referenced in the plan
-      const investDetails = await Promise.all(planDetails.investId.map(async (investId) => {
-        const invest = await investModel.findById(investId);
-        return invest;
-      }));
-
-      return {
-        plan: planDetails,
-        investDetails: investDetails.filter(invest => invest !== null)
-      };
+    // Extract only the populated plan and investment details
+    const investmentPlansWithDetails = userPlans.map(userPlan => ({
+      plan: userPlan.plan,
+      investment: userPlan.investment
     }));
 
-    // Filter out null values (if any)
-    const filteredInvestmentPlans = populatedInvestmentPlans.filter(plan => plan !== null);
-
-    // Return the investment plans associated with the user along with their invest details
-    return res.status(200).json(filteredInvestmentPlans);
+    return res.status(200).json(investmentPlansWithDetails);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server Error' });
   }
 };
-

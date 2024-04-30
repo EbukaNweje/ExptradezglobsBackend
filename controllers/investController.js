@@ -119,6 +119,7 @@ const UserModel = require('../models/User');
 const InvestModel = require('../models/investModel');
 const PlansModel = require('../models/plansModel');
 const { addDays } = require('date-fns');
+const userPlanModel = require('../models/userPlanModel');
 
 // Function to add 0.4% of the money invested after every 24 hours
 const addInterest = async (userId, planId, amount) => {
@@ -201,19 +202,26 @@ exports.makeInvestment = async (req, res) => {
             user: userId,
             plan: planId,
             amount: amount,
-            endDate,
-            Date
+            endDate
         });
         await investment.save();
                 
         investment.user = userId
-        investment.plan = planId
 
-        plan.investId.push(investment._id);
+        plan.investId = investment._id;
         await plan.save();
+
+
+        const userPlan = new userPlanModel({
+            plan: planId,
+            user: userId,
+            investment: investment._id
+        })
+
+        await userPlan.save();
         // Save the transfer id to the user
         user.Transactions.investments.push(investment._id);
-        user.investmentPlan.push(planId);
+        user.investmentPlan.push(userPlan._id);
 
 
         // Update the user's total investment
