@@ -521,12 +521,37 @@ exports.getAllTransactions = async (req, res) => {
 
 
 
+// exports.getAllUserInvestmentPlans = async (req, res) => {
+//   try {
+//     const id = req.params.id; 
+
+//     // Find the user and populate the investmentPlan field
+//     const user = await User.findById(id).populate('investmentPlan.investId');
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Extract investment plans from user object
+//     const investmentPlans = user.investmentPlan;
+
+//     // Return the investment plans associated with the user along with their details
+//     return res.status(200).json(investmentPlans);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server Error' });
+//   }
+// };
+
+
+
+
+
 exports.getAllUserInvestmentPlans = async (req, res) => {
   try {
-    const id = req.params.id; 
+    const id = req.params.id; // Assuming user ID is available in request
 
     // Find the user and populate the investmentPlan field
-    const user = await User.findById(id).populate('investmentPlan.investId');
+    const user = await User.findById(id).populate('investmentPlan');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -534,11 +559,16 @@ exports.getAllUserInvestmentPlans = async (req, res) => {
     // Extract investment plans from user object
     const investmentPlans = user.investmentPlan;
 
+    // Populate the investId field within each investment plan
+    const populatedInvestmentPlans = await Promise.all(investmentPlans.map(async (plan) => {
+      await plan.populate('investId').execPopulate();
+      return plan;
+    }));
+
     // Return the investment plans associated with the user along with their details
-    return res.status(200).json(investmentPlans);
+    return res.status(200).json(populatedInvestmentPlans);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server Error' });
   }
 };
-
