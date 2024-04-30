@@ -120,6 +120,7 @@ const InvestModel = require('../models/investModel');
 const PlansModel = require('../models/plansModel');
 const { addDays } = require('date-fns');
 const userPlanModel = require('../models/userPlanModel');
+const luxon = require('luxon')
 
 // Function to add 0.4% of the money invested after every 24 hours
 const addInterest = async (userId, planId, amount) => {
@@ -194,9 +195,36 @@ exports.makeInvestment = async (req, res) => {
         // Deduct the amount from the user's balance
         user.accountBalance -= amount;
         await user.save();
-        const endDate = addDays(new Date(), plan.durationDays);
 
 
+
+        const { DateTime } = require('luxon');
+
+            // Get the current date and time
+            const currentDate = DateTime.now();
+
+            // Format the current date and time as a string
+            const formattedDate = currentDate.toLocaleString({
+            weekday: "short",
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+            });
+        const formattedDateTime = DateTime.fromFormat(formattedDate, "EEE, MMM d, yyyy, h:mm a");
+
+        // Add 6 days to the formatted date
+        const endDateFormatted = formattedDateTime.plus({ days: plan.durationDays });
+        
+        const endDate = endDateFormatted.toLocaleString({
+            weekday: "short",
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          });
         // Create the investment record
         const investment = new InvestModel({
             user: userId,
