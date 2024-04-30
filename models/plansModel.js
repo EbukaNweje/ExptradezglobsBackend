@@ -23,7 +23,8 @@ const InvestmentPlanSchema = new mongoose.Schema({
         required: true
     },
     investId: {
-        type: mongoose.SchemaTypes.ObjectId
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'invest'
     },
 }, { timestamps: true });
 
