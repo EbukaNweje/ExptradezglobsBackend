@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const userPlanSchema = new mongoose.Schema({
     plan:{
         type: mongoose.SchemaTypes.ObjectId,
-        ref: 'investmentPlan'
+        ref: 'InvestmentPlan'
     },
     investment:{
         type: mongoose.SchemaTypes.ObjectId,

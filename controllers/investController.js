@@ -208,15 +208,25 @@ exports.makeInvestment = async (req, res) => {
                 
         investment.user = userId
 
-        plan.investId = investment._id;
+        plan.investment = investment._id;
         await plan.save();
 
 
+        // const userPlan = new userPlanModel({
+        //     plan: planId,
+        //     user: userId,
+        //     investment: investment._id
+        // })
+
+
+        // Create a new userPlan document for each investment
         const userPlan = new userPlanModel({
             plan: planId,
             user: userId,
-            investment: investment._id
-        })
+            investment: [investment._id] 
+        });
+
+
 
         await userPlan.save();
         // Save the transfer id to the user
@@ -229,6 +239,25 @@ exports.makeInvestment = async (req, res) => {
         await user.save();
 
       // Schedule interest calculation based on the plan's duration
+// const expirationDate = addDays(new Date(), plan.durationDays);
+// const timeUntilExpiration = expirationDate - Date.now();
+// const interval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+// // Calculate the initial delay until the next 24-hour interval
+// const initialDelay = timeUntilExpiration % interval;
+
+// // Add interest immediately
+// addInterest(userId, planId, amount);
+
+// // Schedule interest calculation every 24 hours until the expiration date
+// setInterval(() => {
+//     addInterest(userId, planId, amount);
+// }, interval);
+
+
+
+
+// Schedule interest calculation based on the plan's duration
 const expirationDate = addDays(new Date(), plan.durationDays);
 const timeUntilExpiration = expirationDate - Date.now();
 const interval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -243,6 +272,7 @@ addInterest(userId, planId, amount);
 setInterval(() => {
     addInterest(userId, planId, amount);
 }, interval);
+
 
 
         res.status(200).json({ message: 'Investment successful', data: investment });
