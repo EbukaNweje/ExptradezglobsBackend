@@ -521,6 +521,28 @@ exports.getAllTransactions = async (req, res) => {
 
 
 
+// exports.getAllUserInvestmentPlans = async (req, res) => {
+//   try {
+//     const id = req.params.id; // Assuming user ID is available in request
+
+//     // Find the user and populate the investmentPlan field
+//     const user = await User.findById(id).populate('investmentPlan.investId');
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Extract investment plans from user object
+//     const investmentPlans = user.investmentPlan;
+
+//     // Return the investment plans associated with the user along with their details
+//     return res.status(200).json(investmentPlans);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server Error' });
+//   }
+// };
+
+
 exports.getAllUserInvestmentPlans = async (req, res) => {
   try {
     const id = req.params.id; // Assuming user ID is available in request
@@ -532,7 +554,14 @@ exports.getAllUserInvestmentPlans = async (req, res) => {
     }
 
     // Extract investment plans from user object
-    const investmentPlans = user.investmentPlan;
+    const investmentPlans = user.investmentPlan.map(plan => {
+      const investId = plan.investId;
+      const planDetails = investId ? investId.toObject() : null;
+      return {
+        investmentPlan: plan.toObject(),
+        investId: planDetails
+      };
+    });
 
     // Return the investment plans associated with the user along with their details
     return res.status(200).json(investmentPlans);
