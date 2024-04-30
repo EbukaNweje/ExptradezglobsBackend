@@ -575,17 +575,15 @@ exports.getAllTransactions = async (req, res) => {
 
 
 
-const User = require('../models/User');
-const InvestmentPlan = require('../models/InvestmentPlan');
-const Invest = require('../models/Invest');
+
 const plansModel = require("../models/plansModel")
 
 exports.getAllUserInvestmentPlans = async (req, res) => {
   try {
-    const userId = req.params.id; // Assuming user ID is available in request
+    const id = req.params.id; // Assuming user ID is available in request
 
     // Find the user by ID
-    const user = await User.findById(userId).populate('investmentPlan');
+    const user = await User.findById(id).populate('investmentPlan');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
