@@ -24,7 +24,10 @@ const InvestSchema = new mongoose.Schema({
     Date:{
         type:String,
         default:createdOn
-    }
+    },
+    endDate:{
+        type:String
+    },
 }, { timestamps: true });
 
 const investModel = mongoose.model('Invest', InvestSchema);
