@@ -149,10 +149,11 @@ const addInterest = async (userId, planId, amount) => {
             amount: interest,
             transactionType: 'Interest'
         });
+        await interestTransaction.save()
 
         user.Transactions.interests.push(interestTransaction._id);
 
-        await interestTransaction.save();
+        await user.save();
 
         // Log the interest transaction in history
         const history = new HistoryModel({
@@ -234,7 +235,7 @@ exports.makeInvestment = async (req, res) => {
             Date,
             amount: amount,
             endDate,
-            returns: totalInterest
+            returns: totalDailyInterest
         });
         await investment.save();
                 
