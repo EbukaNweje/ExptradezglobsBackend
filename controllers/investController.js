@@ -130,14 +130,17 @@ const addInterest = async (userId, planId, amount) => {
         if (!user || !plan) {
             throw new Error('User or plan not found');
         }
-
-        const interest = amount * (plan.percentageInterest / 100); // Calculate interest
+         
+        let totalDailyInterest;
+        const interest = plan.percentageInterest  // Calculate interest
 
         user.accountBalance += parseFloat(interest); // Add interest to the user's account balance
         await user.save();
 
         user.totalProfit += parseFloat(interest) ; // Add interest to the user's account balance
         await user.save();
+
+        totalDailyInterest += parseFloat(interest);
 
         // Log the interest transaction
         const interestTransaction = new InterestModel({
@@ -221,16 +224,17 @@ exports.makeInvestment = async (req, res) => {
             weekday: "short",
             month: "short",
             day: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
+            year: "numeric"
           });
+
         // Create the investment record
         const investment = new InvestModel({
             user: userId,
             plan: planId,
+            Date,
             amount: amount,
-            endDate
+            endDate,
+            returns: totalInterest
         });
         await investment.save();
                 
@@ -265,25 +269,6 @@ exports.makeInvestment = async (req, res) => {
         // Update the user's total investment
         user.totalInvestment += parseFloat(amount);
         await user.save();
-
-      // Schedule interest calculation based on the plan's duration
-// const expirationDate = addDays(new Date(), plan.durationDays);
-// const timeUntilExpiration = expirationDate - Date.now();
-// const interval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-// // Calculate the initial delay until the next 24-hour interval
-// const initialDelay = timeUntilExpiration % interval;
-
-// // Add interest immediately
-// addInterest(userId, planId, amount);
-
-// // Schedule interest calculation every 24 hours until the expiration date
-// setInterval(() => {
-//     addInterest(userId, planId, amount);
-// }, interval);
-
-
-
 
 // Schedule interest calculation based on the plan's duration
 const expirationDate = addDays(new Date(), plan.durationDays);
